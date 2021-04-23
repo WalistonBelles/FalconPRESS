@@ -29,4 +29,23 @@ router.get('/admin/categories', (req, res) => {
     });
 });
 
+router.post('/categories/delete', (req, res) => {
+    var id = req.body.id;
+    if (id != undefined){ // Confere se existe algum valor
+        if (!isNaN(id)){ // Confere se é 1 número
+            Category.destroy({ // Deleta do banco de dados a categoria com o ID requisitado
+                where: {
+                    id: id
+                }
+            }).then(() => {
+                res.redirect('/admin/categories');
+            });
+        }else { // Se não for um número
+            res.redirect('/admin/categories');
+        }
+    }else { // Se não existir 1 valor
+        res.redirect('/admin/categories');
+    }
+});
+
 module.exports = router;
