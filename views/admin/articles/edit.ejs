@@ -6,24 +6,34 @@
     <hr>
     <div class="card">
         <div class="card-header">
-            <h2>Novo artigo</h2>
+            <h2>Editar artigo</h2>
         </div>
         <div class="card-body">
-            <form method="post" action="/articles/save">
-                <input class="form-control" type="text" name="title" placeholder="Defina o título do artigo"><br>
+            <form method="post" action="/articles/update">
+                <input type="hidden" value="<%= article.id %>" name="id">
+                <input class="form-control" type="text" name="title" value="<%= article.title %>"><br>
                 <textarea class="form-control" placeholder="Escreva o artigo aqui" name="body" id="article"></textarea><br>
                 <label>Categoria</label>
                 <select name="category" class="form-control">
                     <% categories.forEach((category) => { %>
-                        <option value="<%= category.id %>"><%= category.title %></option>    
+                        <% if(categories.id == article.categoryId) { %>
+                            <option value="<%= category.id %>" selected><%= category.title %></option>    
+                        <% } else { %>
+                            <option value="<%= category.id %>"><%= category.title %></option>    
+                        <% } %>
                     <% }) %>
                 </select>
                 <br>
-                <button class="btn btn-success">Cadastrar</button>
+                <button class="btn btn-success">Atualizar</button>
             </form>
         </div>
     </div>       
 </div>
+
+<div id="content" style="display: none;" id="">
+    <%- article.body %>
+</div>
+
 </body>
 
 <%- include ('../../partials/footer.ejs') %>
@@ -32,8 +42,12 @@
     tinymce.init({
         language: 'pt_BR',
         selector: "#article",
+        activeEditor: true,
         plugins: [
             'advlist autolink link image lists print preview hr searchreplace wordcount fullscreen insertdatetime media save table paste emoticons',
-        ]
+        ],
+        init_instance_callback: () => {
+            tinymce.get("article").setContent($('#content').html());
+        }  
     })
 </script>
